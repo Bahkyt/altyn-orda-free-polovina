@@ -1,0 +1,32 @@
+{% extends 'main_base.html' %}
+
+  <!--<style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 100px;
+    }
+  </style>-->
+
+{% block burger %}
+    <div class="burger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <div class="nav-menu" id="navMenu">
+      <button style="background: transparent; border: none; color: black;" onclick="changeLanguage('ru')">Рус</button>
+      <button style="background: transparent; border: none; color: black;" onclick="changeLanguage('kz')">Қаз</button>
+      <a href="/profile/{{ user[0] }}">Профиль</a>
+      <a href="/logout">Выйти</a>
+    </div>
+{% endblock %}
+
+{% block login %}
+  <h1>Выберите тест</h1>
+  <button class="test-button" onclick="location.href='/test/1'">Тест 1</button>
+  <button class="test-button" onclick="location.href='/test/2'">Тест 2</button>
+  <button class="test-button" onclick="location.href='/test/3'">Тест 3</button>
+{% endblock %}
+

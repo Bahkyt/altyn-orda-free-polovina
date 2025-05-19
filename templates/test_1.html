@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Тест-1 | "Алтын Орда" олимпиадасы</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/altyn_orda_emblem.png') }}" type="image/png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .school-logo, .olympiad-logo {
+            height: 80px;
+            margin: 0 15px;
+        }
+        .main-content {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+        .test-container {
+            flex: 3;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .question-navigation {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .answer-option {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .answer-option:hover {
+            background-color: #f0f0f0;
+        }
+        .answer-option input {
+            margin-right: 10px;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .nav-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .nav-btn:hover {
+            background-color: #1a252f;
+        }
+        .nav-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .question-list {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        .question-item {
+            width: 100%;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .question-item:hover {
+            background-color: #f0f0f0;
+        }
+        .question-item.current {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .question-item.answered {
+            background-color: #d4af37;
+            color: white;
+        }
+        .timer-container {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .gold-text {
+            color: #d4af37;
+            font-weight: bold;
+        }
+        .language-switcher {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .lang-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .header-content {
+            flex-grow: 1;
+            position: relative;
+        }
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .result-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            text-align: center;
+        }
+        .result-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .result-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 20px;
+        }
+        .close-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .test-container, .question-navigation {
+                width: 100%;
+            }
+            .question-list {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                display: none;
+            }
+
+            .question-list {
+                display: flex;
+                overflow-x: auto;
+                gap: 8px;
+                padding-bottom: 10px;
+                scroll-snap-type: x mandatory;
+            }
+
+            .question-item {
+                flex: 0 0 auto;
+                scroll-snap-align: start;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .answer-option {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <img alt="Эмблема школы №148" class="school-logo" src="{{ url_for('static', filename='img/embleme.png') }}"/>
+        <h2>Қандыағаш қаласы №3 мектеп-гимназиясы КММ-сі</h2>
+    </div>
+    <div class="header-content">
+        <h2 class="gold-text">"Олимпиада" Алтын Орда"</h2>
+        <p>Ильяс Есенберлин по книге "Золотая Орда"</p>
+    </div>
+    <img alt="Эмблема олимпиады" class="olympiad-logo" src="{{ url_for('static', filename='img/altyn_orda_emblem.png') }}"/>
+</header>
+
+<div class="main-content">
+    <div class="test-container">
+        <div class="timer-container">
+            Оставшееся время: <span id="timer">40:00</span>
+        </div>
+
+        <div class="question">
+            <div class="question-text">
+                1. Херман Кибе мағынасы?
+            </div>
+            <label class="answer-option">
+                <input type="radio" name="answer" value="0"> Алтын үмбезді Сарай
+            </label>
+            <label class="answer-option">
+                <input type="radio" name="answer" value="1"> Алтын Орда
+            </label>
+            <label class="answer-option">
+                <input type="radio" name="answer" value="2"> Киев қаласы
+            </label>
+        </div>
+
+        <div class="navigation-buttons">
+            <button class="nav-btn" id="prev-btn" disabled>Назад</button>
+            <button class="nav-btn" id="next-btn">Далее</button>
+        </div>
+    </div>
+
+    <div class="question-navigation">
+        <h3>Вопросы</h3>
+        <div class="question-list">
+            <div class="question-item current">1</div>
+            <div class="question-item">2</div>
+            <div class="question-item">3</div>
+            <div class="question-item">4</div>
+            <div class="question-item">5</div>
+            <div class="question-item">6</div>
+            <div class="question-item">7</div>
+            <div class="question-item">8</div>
+            <div class="question-item">9</div>
+            <div class="question-item">10</div>
+            <div class="question-item">11</div>
+            <div class="question-item">12</div>
+        </div>
+    </div>
+</div>
+
+<div class="result-modal" id="resultModal">
+    <div class="result-content">
+        <h2 class="result-title">Ваш результат</h2>
+        <h4 class="result-title" id="result-all-test" style="color: green;"></h4>
+        <div class="result-score" id="finalScore">0 из 12</div>
+        <button class="close-btn" id="closeResult">Закрыть</button>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 "Алтын Орда" олимпиадасы. о.Актобе. р.Мугалжарский. г.Кандыагаш. Школа-гимназия №3.
+    Все права защищены.</p>
+    <p>По мотивам произведения Ильяса Есенберлина</p>
+</footer>
+
+<script>
+    // Questions data with correct answers (0-based index)
+    const questions = [
+        {
+            question: "1. Херман Кибе мағынасы?",
+            answers: [
+                "Алтын үмбезді Сарай",
+                "Алтын Орда",
+                "Киев қаласы"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "2. Алтын Орда атауын кімдер берген?",
+            answers: [
+                "Моңғолдар",
+                "Орыстар",
+                "Қыпшақтар"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "3. Бату хан қай жылы, неше жасында айықпас дертке ұшыраған еді?",
+            answers: [
+                "1255жылы, 55 жасында",
+                "1252жылы, 55 жасында",
+                "1255жылы, 52 жасында"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "4. Бату ханның, шешесі ойрат бекзадасына шыққан үлкен ұлының аты?",
+            answers: [
+                "Ұлақшы",
+                "Сартақ",
+                "Тоқтыхан"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "5. Қандай себеппен Бату ұлы Барақты хан тағына отырғызу ниеті болады,бірақ бұл ойы неге мүмкін болмады?",
+            answers: [
+                "Барақ қыран құстың жемтігіне айналады",
+                "Атақты әйгілі Жасыда: «Менің ұрпақтарым өздері жеңген моңғолдардан бөтен жұрттардан алған әйелдерден туған балаларын өз тақытарына мұрагер етпеу керек.Мұндай мұрагер әке тағына отырғаннан кейін, ана еліне тартып кетуі мүмүкін»",
+                "Бату айықпас дертке ұшырап, қайтыс болады"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "6. Бату Барақ ұлына алғашқыда қандай ат қоймақ болды?",
+            answers: [
+                "Орұсут, Қыпшақ",
+                "Мадияр, Сартақ",
+                "Орұсут, Бұлор"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "7. Не себепті Бату ұлы Барақты ерекше жақсы көріп, маңдайынан сүйетін? (логикалық сұрақ)",
+            answers: [
+                "Хан тағына лайық көрді",
+                "Кішкентайынан анасынан айырылды",
+                "Өскен сайын анасына ұқсап бара жатты"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "8. «Кәшіктәне» моңғолша қандай мағына берді?",
+            answers: [
+                "Әрі күзетші, әрі қызметі әйелдер",
+                "Жаулап алған елдің сарбаздары",
+                "Гвардия"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "9. Жошыдан неше ұл тарады?",
+            answers: [
+                "24",
+                "4",
+                "17"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "10. Бату ханның сүйеніші Ұлақшы таза моңғол болса, үлкен ұлы Сартақ қандай дінді ұстанған еді?",
+            answers: [
+                "несториан",
+                "христиан",
+                "Мұсылман"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "11. «Топ итті жолбарыс басқарса, күндердің күнінде топ ит жолбарысқа айналады, ал топ жолбарысты ит басқарса, ақырында топ жолбарыс ит болып кетеді» деген ақылын Бату қай ұлына айтып еді?",
+            answers: [
+                "Тоқтыхан",
+                "Ұлақшы",
+                "Аюхан"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "12. Тоғыз өрлік дегеніміз?",
+            answers: [
+                "Орданың ең жоғарғы ақылшы кеңесі. Шыңғысхан осы Тоғыз өрліктің кеңесін бұлжытпай қабылдап отырған.",
+                "Жаулап алған тоғыз елге бір басшы атауы",
+                "Бату батысқа жорық кезінде тоғыз бағыт бойынша шығып, тоғыз жерден басқарып отырған."
+            ],
+            correctAnswer: 0
+        }
+    ];
+
+    // Таймер
+    let timeLeft = 40 * 60; // 45 минут в секундах
+    const timerElement = document.getElementById('timer');
+
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            showResults();
+        } else {
+            timeLeft--;
+        }
+    }
+
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // Навигация по вопросам
+    const questionItems = document.querySelectorAll('.question-item');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const questionTextElement = document.querySelector('.question-text');
+    const answerOptionsContainer = document.querySelector('.question');
+    const resultModal = document.getElementById('resultModal');
+    const finalScoreElement = document.getElementById('finalScore');
+    const closeResultBtn = document.getElementById('closeResult');
+    const resultAllTest = document.getElementById('result-all-test');
+
+    let currentQuestion = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+
+    function calculateScore() {
+        let score = 0;
+        for (let i = 0; i < questions.length; i++) {
+            if (userAnswers[i] !== null && userAnswers[i] === questions[i].correctAnswer) {
+                // Для последнего вопроса даем 2 балла, для остальных - по 1
+                score += (i === questions.length - 1) ? 2 : 1;
+            }
+        }
+        return score;
+    }
+
+    let score_1 = 0;
+    let allTest = false;
+
+    function showResults() {
+        const score = calculateScore();
+
+        if ( score >= {{ min_score }} )
+        {
+            finalScoreElement.textContent = `${score} / 12`;
+            resultModal.style.display = 'flex';
+            score_1 = score;
+            sendData();
+
+            //if ( {{ user[9] }} >= {{ min_score }} && {{ user[10] }} >= {{ min_score }} )
+            //{
+            //// создать сертификат
+            //    resultAllTest.textContent = "Поздравляем! Вы получили сертификат. Вы можете скачать его в своём профиле.";
+            //    closeResultBtn.textContent = "Перейти в профиль";
+            //    allTest = true;
+            //}
+
+        }
+        else {
+            alert("Вы не прошли тест. Пожалуйста, попробуйте снова.");
+            window.location = "/home";
+        }
+    }
+
+
+    closeResultBtn.addEventListener('click', () => {
+        //if (allTest === true) {
+        //    resultAllTest.textContent = "Поздравляем! Вы получили сертификат. Вы можете скачать его в своём профиле.";
+        //    closeResultBtn.textContent = "Перейти в профиль";
+        //    window.location.href = "/profile/{{ user[0] }}";
+        //} else {
+        //    window.location.href = "/home";
+        //}
+        window.location.href = "/home";
+    });
+
+    function sendData() {
+      fetch('/receive_score_1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ score: score_1 })
+      })
+      .then(response => response.json())
+      .then(data => console.log('Ответ от сервера:', data));
+      }
+
+    function updateQuestionNavigation() {
+        questionItems.forEach((item, index) => {
+            item.classList.remove('current');
+            if (index === currentQuestion) {
+                item.classList.add('current');
+            }
+
+            item.classList.remove('answered');
+            if (userAnswers[index] !== null) {
+                item.classList.add('answered');
+            }
+        });
+
+        prevBtn.disabled = currentQuestion === 0;
+        nextBtn.textContent = currentQuestion === questionItems.length - 1 ? 'Завершить' : 'Далее';
+    }
+
+    function displayQuestion(index) {
+        const question = questions[index];
+        questionTextElement.textContent = question.question;
+
+        // Очищаем предыдущие варианты ответов
+        const answerOptions = answerOptionsContainer.querySelectorAll('.answer-option');
+        answerOptions.forEach(option => option.remove());
+
+        // Добавляем новые варианты ответов
+        question.answers.forEach((answer, i) => {
+            const label = document.createElement('label');
+            label.className = 'answer-option';
+
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = 'answer';
+            input.value = i;
+
+            if (userAnswers[currentQuestion] === i) {
+                input.checked = true;
+            }
+
+            input.addEventListener('change', function() {
+                userAnswers[currentQuestion] = parseInt(this.value);
+                updateQuestionNavigation();
+            });
+
+            label.appendChild(input);
+            label.appendChild(document.createTextNode(answer));
+            answerOptionsContainer.insertBefore(label, answerOptionsContainer.querySelector('.navigation-buttons'));
+        });
+    }
+
+    questionItems.forEach((item, index) => {
+        item.addEventListener('click', () => {
+            currentQuestion = index;
+            displayQuestion(currentQuestion);
+            updateQuestionNavigation();
+        });
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            displayQuestion(currentQuestion);
+            updateQuestionNavigation();
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentQuestion < questionItems.length - 1) {
+            currentQuestion++;
+            displayQuestion(currentQuestion);
+            updateQuestionNavigation();
+        } else {
+            // Завершение теста
+            showResults();
+        }
+    });
+
+
+
+    // Инициализация первого вопроса
+    displayQuestion(0);
+    updateQuestionNavigation();
+</script>
+</body>
+</html>

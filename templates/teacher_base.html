@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Кабинет учителя | Алтын Орда</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .download-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    }
+    .download-btn:hover {
+      background-color: #45a049;
+    }
+    header, footer {
+      background-color: #2c3e50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      position: relative;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .user-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 60%;
+      object-fit: cover;
+      margin-right: 20px;
+      border: 3px solid #2c3e50;
+    }
+    .info-block {
+      margin-top: 20px;
+    }
+    .info-block h3 {
+      border-bottom: 2px solid #d4af37;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    .btn {
+      background-color: #2c3e50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #1a252f;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .school-logo, .olympiad-logo {
+      height: 80px;
+      margin: 0 15px;
+    }
+
+    .embleme-content {
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      gap: 15px;
+    }
+
+    .school-log {
+      width: 70px;
+      height: 70px;
+    }
+
+    .text-log {
+      color: #ffc100;
+      align-items: center;
+      justify-content: left;
+      display: flex;
+      gap: 15px;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main-content {
+      flex: 1;
+    }
+
+    footer {
+      background-color: #2c3e50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .burger {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 30px;
+      height: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .burger div {
+      height: 4px;
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    .nav-menu {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: #2c3e50;
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    .nav-menu a:hover {
+      background-color: #f0f0f0;
+    }
+
+    /* Стили для таблицы результатов */
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .results-table th, .results-table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .results-table th {
+      background-color: #2c3e50;
+      color: white;
+    }
+
+    .results-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .results-table tr:hover {
+      background-color: #ddd;
+    }
+
+    .search-filter {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-filter input, .search-filter select {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    .search-filter button {
+      padding: 8px 15px;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .search-filter button:hover {
+      background-color: #1a252f;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 5px;
+    }
+
+    .pagination button {
+      padding: 8px 12px;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .pagination button:hover {
+      background-color: #1a252f;
+    }
+
+    .pagination button.active {
+      background-color: #d4af37;
+    }
+
+    {% block css_teacher %}
+    {% endblock %}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="embleme-content">
+      <img src="{{ url_for('static', filename='img/embleme.png') }}" alt="Эмблема школы" class="school-log">
+      <h2 class="text-log"> Кабинет учителя </h2>
+    </div>
+
+  <button onclick="window.location = '/logout';">Выйти</button>
+    <!--<div class="burger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div class="nav-menu" id="navMenu">
+      <a href="students_results.html">Результаты учеников</a>
+      <a href="add_student.html">Добавить ученика</a>
+      <a href="index.html">Главная страница</a>
+      <a href="logout.html">Выйти</a>
+    </div>-->
+  </header>
+
+<main>
+  <div class="container">
+    <div class="user-info">
+      <img src="{{ url_for('static', filename='img/apaiphoto.jpg') }}" alt="Фото учителя" class="user-photo">
+      <div>
+        <h2>Тлесова Гульмира Адильтайкызы</h2>
+        <p>Школа: Қандыағаш қаласы №3 мектеп-гимназиясы КММ-сі</p>
+        <p>Email: tlesova.gulmira@mail.ru</p>
+      </div>
+    </div>
+    <a href="/teacher/xlsx" class="download-btn">📥 Скачать в Excel</a>
+    <br><br>
+        <form id="filterForm" method="POST" action="/teacher">
+      <input type="text" name="email" id="emailInput" placeholder="Введите id">
+      <button type="button" onclick='filterStudents()'>Фильтровать</button>
+      <button type="button" onclick='window.location = "/teacher";'>Показать всех</button>
+    </form>
+
+    {% block teacher %}
+
+    {% endblock %}
+
+  </div>
+</main>
+
+  <footer>
+    <p>© 2025 Олимпиада "Алтын Орда". Все права защищены.</p>
+  </footer>
+
+  <script>
+
+function sendData(id) {
+let place = document.getElementById(`place-${id}`).value; // получаем значение из input/select/textarea
+    fetch(`/update_place/${id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ place: place })
+    }).then(response => {
+        if (response.ok) {
+            location.reload(); // обновляем страницу
+        } else {
+            alert("Ошибка обновления.");
+        }
+    });
+}
+
+function updatePermission(id, value) {
+    fetch(`/teacher/${id}/update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ payment_status: value })
+    }).then(response => {
+        if (response.ok) {
+            location.reload(); // обновляем страницу
+        } else {
+            alert("Ошибка обновления.");
+        }
+    });
+}
+
+    function toggleMenu() {
+      const menu = document.getElementById('navMenu');
+      menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    document.addEventListener('click', function(event) {
+      const burger = document.querySelector('.burger');
+      const menu = document.getElementById('navMenu');
+      if (!burger.contains(event.target) && !menu.contains(event.target)) {
+        menu.style.display = 'none';
+      }
+    });
+
+function filterStudents() {
+  const email = document.getElementById("emailInput").value.trim();
+  if (email) {
+    const encodedEmail = encodeURIComponent(email);  // закодировать @ и .
+    window.location = `/teacher/${encodedEmail}`;
+  }
+}
+
+    function exportResults() {
+      // Здесь будет код для экспорта результатов
+      alert('Результаты экспортированы в Excel!');
+    }
+  </script>
+</body>
+</html>

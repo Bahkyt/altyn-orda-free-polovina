@@ -1,0 +1,44 @@
+{% extends 'main_base.html' %}
+
+
+
+{% block login %}
+
+<h2>Регистрация</h2>
+<form method="post">
+    <input placeholder="Имя" name="first_name"
+           style="width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box;" type="text" required/>
+
+    <input placeholder="Фамилия" name="last_name"
+           style="width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box;" type="text" required/>
+
+    <input placeholder="Класс (например, 9)" name="class"
+           style="width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box;" type="number" min="1" max="11" required/>
+
+    <select name="class_letter" required
+        style="width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box;">
+    <option value="">Выберите букву класса</option>
+    <option value="А">А</option>
+    <option value="Ә">Ә</option>
+    <option value="Б">Б</option>
+    <option value="В">В</option>
+    <option value="Г">Г</option>
+    <option value="Ғ">Ғ</option>
+    <option value="Д">Д</option>
+    <option value="Е">Е</option>
+    </select>
+
+    <input placeholder="Электронная почта" name="email"
+           style="width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box;" type="email" required/>
+
+    <input placeholder="Пароль" name="password"
+           style="width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box;" type="password" required/>
+
+    <button class="login-btn" type="submit" style="margin-top: 10px;">Зарегистрироваться</button>
+
+    <div class="login-links">
+        <a href="/">Уже есть аккаунт?</a>
+    </div>
+</form>
+
+{% endblock %}

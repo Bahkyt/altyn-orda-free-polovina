@@ -1,0 +1,37 @@
+{% extends 'teacher_base.html' %}
+{% block teacher %}
+    <div class="info-block">
+      <h3>Мои ученики</h3>
+
+
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>ФИО ученика</th>
+            <th>Класс</th>
+            <th>Email</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+             {% for row in rows %}
+          <tr>
+            <td>{{ row[0]}}</td>
+            <td>
+              {{ row [2]}}
+              {{ row [1]}}
+            </td>
+            <td>
+            {{ row [3]}} "{{ row [4]}}"
+            </td>
+            <td>
+            {{ row[5] }}
+             </td>
+            <td><button class="btn" onclick="window.location = '/teacher/{{row[0]}}'">Подробнее</button></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endblock %}

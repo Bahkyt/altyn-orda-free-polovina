@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Личный кабинет | Алтын Орда</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    header, footer {
+      background-color: #2c3e50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      position: relative;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .user-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 60%;
+      object-fit: cover;
+      margin-right: 20px;
+      border: 3px solid #2c3e50;
+    }
+    .info-block {
+      margin-top: 20px;
+    }
+    .info-block h3 {
+      border-bottom: 2px solid #d4af37;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    .btn {
+      background-color: #2c3e50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #1a252f;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .school-logo, .olympiad-logo {
+      height: 80px;
+      margin: 0 15px;
+    }
+
+    .embleme-content {
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      gap: 15px;
+    }
+
+    .school-log {
+      width: 70px;
+      height: 70px;
+    }
+
+    .text-log {
+      color: #ffc100;
+      align-items: center;
+      justify-content: left;
+      display: flex;
+      gap: 15px;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main-content {
+      flex: 1;
+    }
+
+    footer {
+      background-color: #2c3e50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .burger {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 30px;
+      height: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .burger div {
+      height: 4px;
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    .nav-menu {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: #2c3e50;
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    .nav-menu a:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="embleme-content">
+      <img src="embleme.png" alt="Эмблема школы" class="school-log">
+      <h2 class="text-log"> Личный кабинет участника </h2>
+    </div>
+    <div class="burger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div class="nav-menu" id="navMenu">
+      <a href="/home">Главная страница</a>
+      <a href="/logout">Выйти</a>
+    </div>
+  </header>
+
+<main>
+  <div class="container">
+    <div class="user-info">
+      <img src="profileph.jpg" alt="Фото пользователя" class="user-photo">
+      <div>
+        <h2>Иванов Иван</h2>
+        <p>ИИН: 990101350789</p>
+        <p>Email: ivan@example.com</p>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <h3>Статистика</h3>
+      <p>Ваш результат: 85 из 100</p>
+      <p>Статус: Пройден</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Загрузить диплом</h3>
+      <button class="btn">Скачать PDF</button>
+    </div>
+
+    <div class="info-block">
+      <h3>Редактировать профиль</h3>
+      <button class="btn">Изменить данные</button>
+    </div>
+  </div>
+</main>
+
+  <footer>
+    <p>© 2023 Олимпиада "Алтын Орда". Все права защищены.</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('navMenu');
+      menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    document.addEventListener('click', function(event) {
+      const burger = document.querySelector('.burger');
+      const menu = document.getElementById('navMenu');
+      if (!burger.contains(event.target) && !menu.contains(event.target)) {
+        menu.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% extends 'teacher_base.html' %}
+
+
+{% block css_teacher %}
+
+.container {
+    max-width: 1200px;
+}
+
+{% endblock %}
+
+  {% block teacher %}
+<table class="results-table">
+        <thead>
+          <tr>
+            <th>ФИО ученика</th>
+            <th>Класс</th>
+            <th>Email</th>
+            <th>Статус оплаты</th>
+            <th>Разрешение оплаты</th>
+            <th>Тест 1</th>
+            <th>Тест 2</th>
+            <th>Тест 3</th>
+            <th>Общий балл</th>
+            <th>Выдать место</th>
+            <th>Подтвердить</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ user[2] }} {{ user[1] }}</td>
+            <td>{{ user[3] }} "{{ user[4] }}"</td>
+            <td>{{ user[5] }}</td>
+            <td>
+                {% if user[7] == 0 %}
+                <img src="{{ url_for('static', filename='img/not_ok.png') }}" alt="", width="25px">
+                {% else %}
+                <img src="{{ url_for('static', filename='img/ok.png') }}" alt="", width="25px">
+                {% endif %}
+            </td>
+              <td>
+                {% if user[7] == 0 %}
+                <button onclick="updatePermission({{ user[0] }}, 1)">Разрешить</button>
+                {% else %}
+                <button onclick="updatePermission({{ user[0] }}, 0)">Запретить</button>
+                {% endif %}
+            </td>
+
+            <td>{{ user[8] }}</td>
+            <td>{{ user[9] }}</td>
+            <td>{{ user[10] }}</td>
+            <td>{{ user[8] + user[9] + user[10] }}</td>
+            <td><input type="number" name="place" id="place-{{ user[0] }}" value="{{ user[14] }}"></td>
+              <td><button onclick="sendData({{ user[0] }})">Дать</button></td>
+          </tr>
+        </tbody>
+      </table>
+{% endblock %}

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Тест-2 | "Алтын Орда" олимпиадасы</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/altyn_orda_emblem.png') }}" type="image/png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .school-logo, .olympiad-logo {
+            height: 80px;
+            margin: 0 15px;
+        }
+        .main-content {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+        .test-container {
+            flex: 3;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .question-navigation {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .answer-option {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .answer-option:hover {
+            background-color: #f0f0f0;
+        }
+        .answer-option input {
+            margin-right: 10px;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .nav-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .nav-btn:hover {
+            background-color: #1a252f;
+        }
+        .nav-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .question-list {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        .question-item {
+            width: 100%;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .question-item:hover {
+            background-color: #f0f0f0;
+        }
+        .question-item.current {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .question-item.answered {
+            background-color: #d4af37;
+            color: white;
+        }
+        .timer-container {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .gold-text {
+            color: #d4af37;
+            font-weight: bold;
+        }
+        .language-switcher {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .lang-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .header-content {
+            flex-grow: 1;
+            position: relative;
+        }
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .result-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            text-align: center;
+        }
+        .result-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .result-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 20px;
+        }
+        .close-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .test-container, .question-navigation {
+                width: 100%;
+            }
+            .question-list {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                display: none;
+            }
+
+            .question-list {
+                display: flex;
+                overflow-x: auto;
+                gap: 8px;
+                padding-bottom: 10px;
+                scroll-snap-type: x mandatory;
+            }
+
+            .question-item {
+                flex: 0 0 auto;
+                scroll-snap-align: start;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .answer-option {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <img alt="Эмблема школы №148" class="school-logo" src="{{ url_for('static', filename='img/embleme.png') }}"/>
+        <h2>Қандыағаш қаласы №3 мектеп-гимназиясы КММ-сі</h2>
+    </div>
+    <div class="header-content">
+        <h2 class="gold-text">"Олимпиада" Алтын Орда"</h2>
+        <p>Ильяс Есенберлин по книге "Золотая Орда"</p>
+    </div>
+    <img alt="Эмблема олимпиады" class="olympiad-logo" src="{{ url_for('static', filename='img/altyn_orda_emblem.png') }}"/>
+</header>
+
+<div class="main-content">
+    <div class="test-container">
+        <div class="timer-container">
+            Оставшееся время: <span id="timer">40:00</span>
+        </div>
+
+        <div class="question">
+            <div class="question-text">
+                1. Херман Кибе мағынасы?
+            </div>
+            <label class="answer-option">
+                <input type="radio" name="answer" value="0"> Алтын үмбезді Сарай
+            </label>
+            <label class="answer-option">
+                <input type="radio" name="answer" value="1"> Алтын Орда
+            </label>
+            <label class="answer-option">
+                <input type="radio" name="answer" value="2"> Киев қаласы
+            </label>
+        </div>
+
+        <div class="navigation-buttons">
+            <button class="nav-btn" id="prev-btn" disabled>Назад</button>
+            <button class="nav-btn" id="next-btn">Далее</button>
+        </div>
+    </div>
+
+    <div class="question-navigation">
+        <h3>Вопросы</h3>
+        <div class="question-list">
+            <div class="question-item current">1</div>
+            <div class="question-item">2</div>
+            <div class="question-item">3</div>
+            <div class="question-item">4</div>
+            <div class="question-item">5</div>
+            <div class="question-item">6</div>
+            <div class="question-item">7</div>
+            <div class="question-item">8</div>
+            <div class="question-item">9</div>
+            <div class="question-item">10</div>
+            <div class="question-item">11</div>
+            <div class="question-item">12</div>
+            <div class="question-item">13</div>
+            <div class="question-item">14</div>
+            <div class="question-item">15</div>
+            <div class="question-item">16</div>
+            <div class="question-item">17</div>
+            <div class="question-item">18</div>
+            <div class="question-item">19</div>
+            <div class="question-item">20</div>
+        </div>
+    </div>
+</div>
+
+<div class="result-modal" id="resultModal">
+    <div class="result-content">
+        <h2 class="result-title">Ваш результат</h2>
+        <h4 class="result-title" id="result-all-test" style="color: green;"></h4>
+        <div class="result-score" id="finalScore">0 из 21</div>
+        <button class="close-btn" id="closeResult">Закрыть</button>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 "Алтын Орда" олимпиадасы. о.Актобе. р.Мугалжарский. г.Кандыагаш. Школа-гимназия №3.
+    Все права защищены.</p>
+    <p>По мотивам произведения Ильяса Есенберлина</p>
+</footer>
+
+<script>
+    // Questions data with correct answers (0-based index)
+    const questions = [
+        {
+            question: "1. Найыб сөзінің мағынасы?\n",
+            answers: [
+                "A. Бекініс, цитадель\n",
+                "B. орнына қалған шахар билеушісі\n",
+                "C. Шахардың бас соты\n"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "2. Қай жылы Сартақ Александр Невскиймен андас болды?\n",
+            answers: [
+                "A. 1249",
+                "B. 1246",
+                "C. 1239"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "3. Не себепті Сартақ  Александр Невскийдің немере туысы Наталья сұлуды әйелдікке ала алмады?\n",
+            answers: [
+                "A. Орыс епископы некеге тыйым салды\n",
+                "B. Әкесінің інісі Берке хан, Сартақтан бұрын Натальямен некелесіп қойған еді\n",
+                "C. Сартақ ұсынған дін сай келмеді."
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "4. Отырарды жаулап алуда Шыңғыс хан қандай тәсіл қолданған болатын?\n",
+            answers: [
+                "A. Кері шегініп, жеңілгендей болып, тарпа бас салу\n",
+                "B. Шабатын елдеріне алдын ала әдейі адамдар жіберу",
+                "C. Ел ішіне іріткі салу\n"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "5. Отырар қаласын алу барысында қаланың найыбы атанған Қадырхан кімнің қолынан қаза табады?\n",
+            answers: [
+                "A. Бату ұлы Сартақтан \n",
+                "B. Үгедей ұлы Күйіктен\n",
+                "C. Қара Бұғыдан\n"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "6. Моңғол әскербасы атанған керемет жауынгер Қара бұғы не себепті Бату хан алдында айыпты болды?\n",
+            answers: [
+                "A. Соғыс барысында жаудан қорқып қашуға амал жасады\n",
+                "B. Орусұт елінің 16 жасар қызын зәбірлеп, моңғол жасағына кір келтірді\n",
+                "C. Бату хан әйеліне көзсіз ғашық болып, әшкереленді\n "
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "7. Қара Бұғы кімнің қолынан жан тапсырды?",
+            answers: [
+                "А. Сартақ\n",
+                "В. Мөңке\n",
+                "С. Святослав\n"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "8. 1240 жылы жазылған моңғолдардың құпия тарихы атты кітабы қалай аталады?\n",
+            answers: [
+                "А. Юань Чао Би Ши\n",
+                "В. Жасақ\n",
+                "С. Хучир\n"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "9. Қандай оқиға  Шыңғыс ханның ашуына тиіп атақты «Жасақ» заңында осы мәселені өсиет етіп қалдырған? Өсиет: Масаң ада әрі керең, әрі соқыр,онда ақыл парасат болмайды.Ол ұятқа қалудан басқа ештеңе тындырмақ емес.Қандай оқиғадан кейін оқиғаны анықтаңыз\n",
+            answers: [
+                "А. Өзі үлкен сенім артқан «Кәшіктәне» арнаулы жасақ сарбаздары шарап ішуге құмартқан.\n",
+                "В. Халық арасында шарап ішу көп болып, көп халық ес білмей елдегі тәртіпті бұзған\n",
+                "С. Ұлдары Үгедей мен Жағатай Хорезмді жеңіп алы, үш апта шарап ішіп,апат болып, масыққан жауынгерлер елді топ-тобымен өлтіре бастаған\n"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "10. Сартақ қалай жан тапсырды?\n",
+            answers: [
+                "А. Сарай сүлгішісі Қара Бұғының інісі Сары Бұғының қастандығынан (Кек алу мақсатымен) \n",
+                "В. Ішінен қан кетіп науқастанды\n",
+                "С. Берке ханның улы кеселінен екі тәулік ауырып , белгісіз кеселден жан тапсырды\n"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "11. Алтын Орда ханы Сартақ улы кеселден қайтыс болғаннан кейін хан тағына кім отырды?\n",
+            answers: [
+                "А. Ұлақшы\n",
+                "В. Берке\n",
+                "С. Мөңке\n"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "12. Бату Барақ ұлына алғашқыда қандай ат қоймақ болды?\n",
+            answers: [
+                "А. Орұсут, Қыпшақ\n",
+                "В. Мадияр, Сартақ\n",
+                "С. Орұсут, Бұлор\n"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "13. «Лашқарқаш – и бұзұрық» моңғолша қалай аталады? \n",
+            answers: [
+                "А. Әскербасы, бас қолбасшы\n",
+                "В. Орда сарайының ас бөлушісі\n",
+                "С. Хан орнына қалған шахар билеушісі\n"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "14. «Юань Чао Би Ши»-\n",
+            answers: [
+                "А. Моңғол империясының атауы\n",
+                "В. Каспий теңізінің көне аттарының бірі\n",
+                "С. 1240 жылғы моңғолдардың құпия жазылған тарихы\n"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "15. «Авариз» сөзінің мағынасы?\n",
+            answers: [
+                "А. салық\n",
+                "В. Орда сарайының ас бөлушісі\n",
+                "С. Егіз жұлдыз атауы\n"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "16. Үгедей мен Жағатай Хорезмшах Мұхаммедті жеңіп талқандаған соң, бұл жеңіс апатқа айналды?\n",
+            answers: [
+                "A. Хорезмшах Мұхамедттің жер астындағы сарайларындағ ішсе тауыслмайтын шараптарды ішіп масайған жауынгерлерді, шапқыншыларға өшіккен жұрт  ретін тауып, топ-тобымен қыра бастады. \n",
+                "В. Үгедей мен Жошы бастған әскер Хорезмшах Мұхамедті жеңген соң Үргеніште қалып алапат құм дауылына тап болып көп әскерлерін айырылады.\n",
+                "С. Хорезмшах Мұхамед жеңілген сыңай танытып кері шегініп, жеңістің буына түскен моңғол әскерлеріне кенттен шабыл жасап, моңғол әскерлерін қырып жойды. \n"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "17. Шыңғыс хан өз кезінде арнаулы әскер жасақтап оларға кәшіктәне деген атау берген еді. Шыңғыс хан немересі атасы көз жұмған соң осы бағытты ұстанып арнаулы хан әскерінің атауын өзгерткен болатын. Бату хан тұсында кәшіктәне демей не деп ",
+            answers: [
+                "А. басқақ",
+                "В. төлеңгіт\n",
+                "С. қаптеғұл\n"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "18. Сартақ ханның ең басты ақылшы, кеңесшісі кім болды?\n",
+            answers: [
+                "А. Мөңке Темірдің ағасы Бахадүр\n",
+                "В. Жошының бесінші баласы Сибанның ұлы Сауық",
+                "С. Бату ханның бақауылы Сары Бұғы"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "19. Сартақ орусұт княздарымен бас қосқан жиында Орусұт батыры Гаврийлге рашиян шарабы шарабына у беру мақсаты?\n",
+            answers: [
+                "А. Сартақ пен Александр Невский арасына от салу мақсатында \n",
+                "В. Орусұт батыры Гаврийл бір шындықтың білуінде",
+                "С. Орусұт княздарымен моң,ол билеушілерінің одақтас болмайтынының белгісі еді\n"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "20. Сартақ ханның өлімін бәрінен бұрын қдайдан тілеген кім еді?\n",
+            answers: [
+                "А. Ең басты кеңесшісі Сауық\n",
+                "В. Берке хан\n",
+                "С. Мөңке Темір"
+            ],
+            correctAnswer: 1
+        },
+    ];
+
+    // Таймер
+    let timeLeft = 40 * 60; // 45 минут в секундах
+    const timerElement = document.getElementById('timer');
+
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            showResults();
+        } else {
+            timeLeft--;
+        }
+    }
+
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // Навигация по вопросам
+    const questionItems = document.querySelectorAll('.question-item');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const questionTextElement = document.querySelector('.question-text');
+    const answerOptionsContainer = document.querySelector('.question');
+    const resultModal = document.getElementById('resultModal');
+    const finalScoreElement = document.getElementById('finalScore');
+    const closeResultBtn = document.getElementById('closeResult');
+    const resultAllTest = document.getElementById('result-all-test');
+
+    let currentQuestion = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+
+    function calculateScore() {
+        let score = 0;
+        for (let i = 0; i < questions.length; i++) {
+            if (userAnswers[i] !== null && userAnswers[i] === questions[i].correctAnswer) {
+                // Для последнего вопроса даем 2 балла, для остальных - по 1
+                score += (i === questions.length - 1) ? 2 : 1;
+            }
+        }
+        return score;
+    }
+
+    let score_1 = 0;
+    let allTest = false;
+
+    function showResults() {
+        const score = calculateScore();
+
+        if ( score >= {{ min_score }} )
+        {
+            finalScoreElement.textContent = `${score} / 20`;
+            resultModal.style.display = 'flex';
+            score_1 = score;
+            sendData();
+
+            //if ( {{ user[8] }} >= {{ min_score }} && {{ user[10] }} >= {{ min_score }} )
+            //{
+            //// создать сертификат
+            //    resultAllTest.textContent = "Поздравляем! Вы получили сертификат. Вы можете скачать его в своём профиле.";
+            //    closeResultBtn.textContent = "Перейти в профиль";
+            //    allTest = true;
+            //}
+
+        }
+        else {
+            alert("Вы не прошли тест. Пожалуйста, попробуйте снова.");
+            window.location = "/home";
+        }
+    }
+
+
+    closeResultBtn.addEventListener('click', () => {
+        //if (allTest === true) {
+        //    resultAllTest.textContent = "Поздравляем! Вы получили сертификат. Вы можете скачать его в своём профиле.";
+        //    closeResultBtn.textContent = "Перейти в профиль";
+        //    window.location.href = "/profile/{{ user[0] }}";
+        //} else {
+        //    window.location.href = "/home";
+        //}
+        window.location.href = "/home";
+    });
+
+    function sendData() {
+      fetch('/receive_score_2', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ score: score_1 })
+      })
+      .then(response => response.json())
+      .then(data => console.log('Ответ от сервера:', data));
+      }
+
+    function updateQuestionNavigation() {
+        questionItems.forEach((item, index) => {
+            item.classList.remove('current');
+            if (index === currentQuestion) {
+                item.classList.add('current');
+            }
+
+            item.classList.remove('answered');
+            if (userAnswers[index] !== null) {
+                item.classList.add('answered');
+            }
+        });
+
+        prevBtn.disabled = currentQuestion === 0;
+        nextBtn.textContent = currentQuestion === questionItems.length - 1 ? 'Завершить' : 'Далее';
+    }
+
+    function displayQuestion(index) {
+        const question = questions[index];
+        questionTextElement.textContent = question.question;
+
+        // Очищаем предыдущие варианты ответов
+        const answerOptions = answerOptionsContainer.querySelectorAll('.answer-option');
+        answerOptions.forEach(option => option.remove());
+
+        // Добавляем новые варианты ответов
+        question.answers.forEach((answer, i) => {
+            const label = document.createElement('label');
+            label.className = 'answer-option';
+
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = 'answer';
+            input.value = i;
+
+            if (userAnswers[currentQuestion] === i) {
+                input.checked = true;
+            }
+
+            input.addEventListener('change', function() {
+                userAnswers[currentQuestion] = parseInt(this.value);
+                updateQuestionNavigation();
+            });
+
+            label.appendChild(input);
+            label.appendChild(document.createTextNode(answer));
+            answerOptionsContainer.insertBefore(label, answerOptionsContainer.querySelector('.navigation-buttons'));
+        });
+    }
+
+    questionItems.forEach((item, index) => {
+        item.addEventListener('click', () => {
+            currentQuestion = index;
+            displayQuestion(currentQuestion);
+            updateQuestionNavigation();
+        });
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            displayQuestion(currentQuestion);
+            updateQuestionNavigation();
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentQuestion < questionItems.length - 1) {
+            currentQuestion++;
+            displayQuestion(currentQuestion);
+            updateQuestionNavigation();
+        } else {
+            // Завершение теста
+            showResults();
+        }
+    });
+
+
+
+    // Инициализация первого вопроса
+    displayQuestion(0);
+    updateQuestionNavigation();
+</script>
+</body>
+</html>

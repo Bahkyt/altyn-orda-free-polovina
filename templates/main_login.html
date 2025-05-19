@@ -1,0 +1,20 @@
+{% extends 'main_base.html' %}
+
+
+
+{% block login %}
+
+<h2>Вход в систему</h2>
+<form method="post">
+    <input placeholder="Логин" name="login" style="width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box;"
+           type="text"/>
+    <input placeholder="Пароль" name="password" style="width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box;"
+           type="password"/>
+    <button class="login-btn">Войти</button>
+    <div class="login-links">
+        <a href="/forgot-password/email">Забыли пароль?</a>
+        <a href="/registration">Регистрация</a>
+    </div>
+</form>
+
+{% endblock %}

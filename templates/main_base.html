@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title data-ru="Олимпиада 'Алтын Орда' | Школа №148" data-kz="'Алтын Орда' олимпиадасы | №148 мектеп">"Алтын Орда" олимпиадасы | Школа №148</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/altyn_orda_emblem.png') }}" type="image/png">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .tab-container {
+  margin-top: 30px;
+  border-bottom: 2px solid #eee;
+  position: relative;
+}
+.tab-buttons {
+  display: flex;
+  position: relative;
+}
+.tab-buttons button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  color: #333;
+}
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: 4px;
+  background-color: #ffc107;
+  border-radius: 2px;
+  transition: left 0.3s ease;
+  z-index: 0;
+}
+        .burger {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 30px;
+      height: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .burger div {
+      height: 4px;
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    .nav-menu {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: #2c3e50;
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    .nav-menu a:hover {
+      background-color: #f0f0f0;
+    }
+        .payment-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .file-upload {
+            border: 2px dashed #ccc;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+        .file-upload:hover {
+            border-color: #2a5885;
+        }
+        #fileName {
+            display: block;
+            margin-top: 10px;
+            color: #666;
+        }
+        #receiptFile {
+            display: none;
+        }
+        button {
+            background: #2a5885;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1d456b;
+        }
+        .kaspi-qr {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .kaspi-qr img {
+            max-width: 200px;
+        }
+        #custom-alert {
+            display: none;
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffc107;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            z-index: 9999;
+        }
+        .test-button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 8px;
+        }
+        .test-button:hover {
+            background-color: #45a049;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .school-logo, .olympiad-logo {
+            height: 90px;
+            margin: 0 15px;
+        }
+        .main-content {
+            display: flex;
+            padding: 20px;
+        }
+        .left-side {
+            width: 30%;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-right: 20px;
+        }
+        .right-side {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+        .teacher-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .teacher-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 3px solid #2c3e50;
+        }
+        .awards-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .award-photo {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+        .award-photo:hover {
+            transform: scale(1.05);
+        }
+        .login-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .login-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+            width: 100%;
+        }
+        .login-btn:hover {
+            background-color: #1a252f;
+        }
+        .login-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .login-links a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+        .school-address {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .olympiad-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #d4af37;
+        }
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        h1 {
+            margin: 0;
+        }
+        .gold-text {
+            color: #d4af37;
+            font-weight: bold;
+        }
+        .language-switcher {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        .lang-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .lang-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .lang-btn.active {
+            background: rgba(255,255,255,0.4);
+            font-weight: bold;
+        }
+        .header-content {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        /* Общий стиль */
+        .language-switcher {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 15px;
+            background-color: #2c3e50;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .main-wrapper, .container, .main-content {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .main-section {
+                flex-direction: column;
+            }
+            .auth-box {
+                order: 1;
+            }
+            .teacher-box {
+                order: 2;
+            }
+            .achievements {
+                order: 3;
+            }
+            .main-content {
+                flex-direction: column;
+            }
+            .auth-section {
+                order: 1;
+                width: 100%;
+            }
+            .teacher-section {
+                order: 2;
+                width: 100%;
+            }
+            .awards-section {
+                order: 3;
+                width: 100%;
+            }
+            header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 10px;
+            }
+            .logo-container {
+                justify-content: center;
+                align-items: center;
+                flex-direction: row;
+                margin-bottom: 10px;
+            }
+            .school-logo {
+                height: 60px;
+                margin-right: 10px;
+            }
+            .logo-container h1 {
+                font-size: 20px;
+                margin: 0;
+            }
+            .olympiad-logo {
+                display: none;
+            }
+            .header-content h2.gold-text {
+                font-size: 28px;
+                text-align: center;
+                margin: 10px 0 5px 0;
+            }
+            .header-content p {
+                font-size: 14px;
+                text-align: center;
+                margin: 0;
+            }
+            .main-content {
+                display: flex;
+                flex-direction: column;
+            }
+            .right-side {
+                order: 1;
+                width: 100%;
+            }
+            .left-side {
+                order: 2;
+                width: 100%;
+                margin-top: 10px;
+            }
+            .awards-gallery {
+                order: 3;
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content h2.gold-text {
+                font-size: 30px;
+            }
+            .awards-gallery {
+                grid-template-columns: 1fr;
+            }
+            .teacher-info {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .teacher-photo {
+                margin-bottom: 10px;
+            }
+            .school-address, .olympiad-info {
+                text-align: center;
+            }
+        }
+
+        .mobile-only {
+            display: none;
+        }
+        .desktop-only {
+            display: flex;
+        }
+        @media (max-width: 768px) {
+            .mobile-only {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .desktop-only {
+                display: none;
+            }
+            .teacher-photo {
+                margin-bottom: 10px;
+            }
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .price {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+        .pay-btn {
+            background-color: #ff4f00;
+            color: #fff;
+        }
+        .pay-btn:hover {
+            background-color: #e04000;
+        }
+        .test-btn {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            button {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <img alt="Эмблема школы №148" class="school-logo" src="{{ url_for('static', filename='img/embleme.png') }}"/>
+        <h2 class="gold-text" data-ru="Школа-гимназия №3 г. Кандыагаш" data-kz="Қандыағаш қаласы №3 мектеп-гимназиясы КММ-сі">Қандыағаш қаласы №3 мектеп-гимназиясы КММ-сі</h2>
+    </div>
+    <div class="header-content">
+        <h2 class="gold-text" data-ru="Олимпиада 'Алтын Орда'" data-kz="'Алтын Орда' олимпиадасы">"Олимпиада" Алтын Орда</h2>
+        <p data-ru="По мотивам книги Ильяса Есенберлина 'Золотая Орда'" data-kz="Ильяс Есенберлиннің 'Алтын Орда' кітабы бойынша">Ильяс Есенберлин по книге "Золотая Орда</p>
+    </div>
+    <img alt="Эмблема олимпиады" class="olympiad-logo"
+         src="{{ url_for('static', filename='img/altyn_orda_emblem.png') }}"/>
+
+    {% block burger %}{% endblock %}
+</header>
+<div class="main-content">
+    <div id="custom-alert">АТгуташу</div>
+    <div class="left-side">
+        <div class="teacher-info desktop-only">
+            <img alt="Фото учителя" class="teacher-photo" src="{{ url_for('static', filename='img/apaiphoto.jpg') }}"/>
+            <div>
+                <h3>Тлесова Гульмира Адильтайкызы</h3>
+                <p data-ru="Преподаватель" data-kz="Мұғалім">Преподаватель</p>
+                <a href="tel:+7 (705) 728-82-86" style="color: black; text-decoration: none;"><p>Телефон: +7 (705) 728-82-86</p></a>
+                <a href="mailto:tlesova.gulmira@mail.ru" style="color: black; text-decoration: none;"><p>Email: tlesova.gulmira@mail.ru</p></a>
+            </div>
+        </div>
+        <div class="school-address">
+            <h3 data-ru="Адрес школы:" data-kz="Мектеп мекенжайы:">Адрес школы:</h3>
+            <p data-ru="Актюбинская Область, Мугалжарский Район, г.Кандыагаш Достык м\а 21Б"
+               data-kz="Ақтөбе облысы, Мұғалжар ауданы, Қандыағаш қаласы, Достық м-н 21Б">
+               Актюбинская Область, Мугалжарский Район, г.Кандыагаш Достык м\а 21Б</p>
+            <p data-ru="Телефон: +7 (713) 333-50-90" data-kz="Телефон: +7 (713) 333-50-90">Телефон: +7 (713) 333-50-90</p>
+            <p>Instagram: @sh_gim3_kandyagash</p>
+        </div>
+        <div class="olympiad-info">
+            <h3 data-ru="Об олимпиаде:" data-kz="Олимпиада туралы:">Об олимпиаде:</h3>
+            <p data-ru="Олимпиада проводится по мотивам произведения Ильяса Есенберлина 'Алтын Орда' и охватывает вопросы истории, культуры и наследия Золотой Орды."
+               data-kz="Олимпиада Ильяс Есенберлиннің 'Алтын Орда' шығармасы негізінде өткізіліп, Алтын Орданың тарихы, мәдениеті және мұрасы туралы сұрақтарды қамтиды.">
+               Олимпиада проводится по мотивам произведения Ильяса Есенберлина "Алтын Орда" и охватывает вопросы истории, культуры и наследия Золотой Орды.</p>
+        </div>
+    </div>
+    <div class="right-side">
+        <div class="login-section">
+            {% block login %}{% endblock %}
+        </div>
+        <h2 data-ru="Наши достижения" data-kz="Біздің жетістіктеріміз">Наши достижения</h2>
+        <div class="awards-gallery">
+
+
+            <div class="award-card">
+  <video width="320" height="250" controls>
+    <source src="{{ url_for('static', filename='img/video.mp4') }}" type="video/mp4">
+  </video>
+  <p class="award-caption"></p>
+</div>
+            <img alt="Награда 6" class="award-photo" src="{{ url_for('static', filename='img/photo6.jpg') }}"/>
+            <img alt="Награда 6" class="award-photo" src="{{ url_for('static', filename='img/photo2.jpg') }}"/>
+            <img alt="Награда 12" class="award-photo" src="{{ url_for('static', filename='img/photo3.jpg') }}"/>
+            <img alt="Награда 12" class="award-photo" src="{{ url_for('static', filename='img/photo4.png') }}"/>
+            <img alt="Награда 11" class="award-photo" src="{{ url_for('static', filename='img/photo5.jpg') }}"/>
+            <img alt="Награда 7" class="award-photo" src="{{ url_for('static', filename='img/photo11.jpg') }}"/>
+            <img alt="Награда 8" class="award-photo" src="{{ url_for('static', filename='img/photo8.jpg') }}"/>
+            <img alt="Награда 9" class="award-photo" src="{{ url_for('static', filename='img/photo9.jpg') }}"/>
+            <img alt="Награда 10" class="award-photo" src="{{ url_for('static', filename='img/photo10.jpg') }}"/>
+            <img alt="Награда 11" class="award-photo" src="{{ url_for('static', filename='img/photo7.jpg') }}"/>
+            <img alt="Награда 12" class="award-photo" src="{{ url_for('static', filename='img/photo12.jpg') }}"/>
+            <img alt="Награда 13" class="award-photo" src="{{ url_for('static', filename='img/photo13.jpg') }}"/>
+            <img alt="Награда 13" class="award-photo" src="{{ url_for('static', filename='img/photo14.jpg') }}"/>
+            <img alt="Награда 13" class="award-photo" src="{{ url_for('static', filename='img/photo15.jpg') }}"/>
+            <img alt="Награда 13" class="award-photo" src="{{ url_for('static', filename='img/photo16.jpg') }}"/>
+            <img alt="Награда 13" class="award-photo" src="{{ url_for('static', filename='img/photo17.jpg') }}"/>
+            <img alt="Награда 13" class="award-photo" src="{{ url_for('static', filename='img/photo18.jpg') }}"/>
+        </div>
+    </div>
+    <div class="teacher-info mobile-only" style="background-color: white; padding: 15px; border-radius: 8px;">
+        <img alt="Фото учителя" class="teacher-photo" src="{{ url_for('static', filename='img/apaiphoto.jpg') }}"/>
+        <div>
+            <h3>Тлесова Гульмира Адильтайкызы</h3>
+            <p data-ru="Преподаватель" data-kz="Мұғалім">Преподаватель</p>
+            <a href="tel:+7 (705) 728-82-86" style="color: black; text-decoration: none;"><p>Телефон: +7 (705) 728-82-86</p></a>
+            <a href="mailto:tlesova.gulmira@mail.ru" style="color: black; text-decoration: none;"><p>Email: tlesova.gulmira@mail.ru</p></a>
+        </div>
+    </div>
+</div>
+<footer>
+    <p data-ru="© 2025 Олимпиада 'Алтын Орда'. Актюбинская обл. Мугалжарский р-н. г.Кандыагаш. Школа-гимназия №3. Все права защищены."
+       data-kz="© 2025 'Алтын Орда' олимпиадасы. Ақтөбе облысы. Мұғалжар ауданы. Қандыағаш қаласы. №3 мектеп-гимназиясы. Барлық құқықтар қорғалған.">
+       © 2025 "Алтын Орда" олимпиадасы. о.Актобе. р.Мугалжарский. г.Кандыагаш. Школа-гимназия №3. Все права защищены.</p>
+    <p data-ru="По мотивам произведения Ильяса Есенберлина" data-kz="Ильяс Есенберлиннің шығармасы бойынша">По мотивам произведения Ильяса Есенберлина</p>
+</footer>
+<script>
+    function showInstruction(type) {
+  document.getElementById('instruction-text').style.display = (type === 'text') ? 'block' : 'none';
+  document.getElementById('instruction-photo').style.display = (type === 'photo') ? 'block' : 'none';
+
+  const indicator = document.getElementById('tab-indicator');
+  indicator.style.left = (type === 'text') ? '0%' : '50%';
+}
+
+// Показать текстовую инструкцию сразу
+window.addEventListener('DOMContentLoaded', () => {
+  showInstruction('text');
+});
+
+document.getElementById('receiptFile').addEventListener('change', function() {
+  const fileName = this.files[0]?.name || 'Нажмите чтобы выбрать файл';
+  document.getElementById('fileName').textContent = fileName;
+});
+    function toggleMenu() {
+      const menu = document.getElementById('navMenu');
+      menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    document.addEventListener('click', function(event) {
+      const burger = document.querySelector('.burger');
+      const menu = document.getElementById('navMenu');
+      if (!burger.contains(event.target) && !menu.contains(event.target)) {
+        menu.style.display = 'none';
+      }
+    });
+
+    function changeLanguage(lang) {
+        // Обновляем активную кнопку языка
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if ((lang === 'ru' && btn.textContent === 'Рус') ||
+                (lang === 'kz' && btn.textContent === 'Қаз')) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Обновляем все элементы с атрибутами data-ru и data-kz
+        document.querySelectorAll('[data-ru], [data-kz]').forEach(element => {
+            if (lang === 'ru' && element.dataset.ru) {
+                if (element.tagName === 'INPUT' || element.tagName === 'BUTTON') {
+                    element.value = element.dataset.ru;
+                } else {
+                    element.textContent = element.dataset.ru;
+                }
+            } else if (lang === 'kz' && element.dataset.kz) {
+                if (element.tagName === 'INPUT' || element.tagName === 'BUTTON') {
+                    element.value = element.dataset.kz;
+                } else {
+                    element.textContent = element.dataset.kz;
+                }
+            }
+        });
+
+        // Обновляем атрибут lang у html
+        document.documentElement.lang = lang;
+
+        // Обновляем title страницы
+        const title = document.querySelector('title');
+        if (lang === 'ru') {
+            document.title = title.dataset.ru;
+        } else {
+            document.title = title.dataset.kz;
+        }
+    }
+
+    document.getElementById('receiptFile').addEventListener('change', function () {
+        const fileName = this.files[0]?.name || 'Нажмите чтобы выбрать файл';
+        document.getElementById('fileName').innerText = fileName;
+    });
+</script>
+</body>
+</html>

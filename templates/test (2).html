@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Тест | "Алтын Орда" олимпиадасы</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .school-logo, .olympiad-logo {
+            height: 80px;
+            margin: 0 15px;
+        }
+        .main-content {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+        .test-container {
+            flex: 3;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .question-navigation {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .answer-option {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .answer-option:hover {
+            background-color: #f0f0f0;
+        }
+        .answer-option input {
+            margin-right: 10px;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .nav-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .nav-btn:hover {
+            background-color: #1a252f;
+        }
+        .nav-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .question-list {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        .question-item {
+            width: 100%;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .question-item:hover {
+            background-color: #f0f0f0;
+        }
+        .question-item.current {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .question-item.answered {
+            background-color: #d4af37;
+            color: white;
+        }
+        .timer-container {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .gold-text {
+            color: #d4af37;
+            font-weight: bold;
+        }
+        .language-switcher {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .lang-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .lang-btn.active {
+            background: rgba(255,255,255,0.4);
+            font-weight: bold;
+        }
+        .header-content {
+            flex-grow: 1;
+            position: relative;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .test-container, .question-navigation {
+                width: 100%;
+            }
+            .question-list {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Добавлено — для очень маленьких экранов */
+        @media (max-width: 480px) {
+            header {
+                display: none; /* Убираем header */
+            }
+
+            .question-list {
+                display: flex;
+                overflow-x: auto;
+                gap: 8px;
+                padding-bottom: 10px;
+                scroll-snap-type: x mandatory;
+            }
+
+            .question-item {
+                flex: 0 0 auto;
+                scroll-snap-align: start;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .answer-option {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <img alt="Эмблема школы №148" class="school-logo" src="embleme.png"/>
+        <h2 class="school-name">Қандыағаш қаласы №3 мектеп-гимназиясы КММ-сі</h2>
+    </div>
+    <div class="header-content">
+        <h2 class="gold-text olympiad-title">"Олимпиада" Алтын Орда"</h2>
+        <p class="olympiad-subtitle">Ильяс Есенберлин по книге "Золотая Орда"</p>
+    </div>
+    <img alt="Эмблема олимпиады" class="olympiad-logo" src="olympiad-logo.png"/>
+
+    <div class="language-switcher">
+        <button class="lang-btn active" data-lang="ru">Рус</button>
+        <button class="lang-btn" data-lang="kz">Қаз</button>
+    </div>
+</header>
+
+<div class="main-content">
+    <div class="test-container">
+        <div class="timer-container">
+            <span class="timer-text">Оставшееся время:</span> <span id="timer">40:00</span>
+        </div>
+
+        <div class="question">
+            <div class="question-text" data-ru="1. Кто был основателем Золотой Орды?" data-kz="1. Алтын Орданың негізін қалаушы кім?">
+                1. Кто был основателем Золотой Орды?
+            </div>
+            <label class="answer-option">
+                <input type="radio" name="answer" value="1">
+                <span class="answer-text" data-ru="Батый" data-kz="Бату хан">
+                    Батый
+                </span>
+            </label>
+            <label class="answer-option">
+                <input type="radio" name="answer" value="2">
+                <span class="answer-text" data-ru="Чингисхан" data-kz="Шыңғыс хан">
+                    Чингисхан
+                </span>
+            </label>
+            <label class="answer-option">
+                <input type="radio" name="answer" value="3">
+                <span class="answer-text" data-ru="Тохтамыш" data-kz="Тоқтамыс хан">
+                    Тохтамыш
+                </span>
+            </label>
+            <label class="answer-option">
+                <input type="radio" name="answer" value="4">
+                <span class="answer-text" data-ru="Узбек-хан" data-kz="Өзбек хан">
+                    Узбек-хан
+                </span>
+            </label>
+        </div>
+
+        <div class="navigation-buttons">
+            <button class="nav-btn" id="prev-btn" disabled data-ru="Назад" data-kz="Артқа">Назад</button>
+            <button class="nav-btn" id="next-btn" data-ru="Далее" data-kz="Алға">Далее</button>
+        </div>
+    </div>
+
+    <div class="question-navigation">
+        <h3 class="questions-title" data-ru="Вопросы" data-kz="Сұрақтар">Вопросы</h3>
+        <div class="question-list">
+            <div class="question-item current">1</div>
+            <div class="question-item">2</div>
+            <div class="question-item">3</div>
+            <div class="question-item">4</div>
+            <div class="question-item">5</div>
+            <div class="question-item">6</div>
+            <div class="question-item">7</div>
+            <div class="question-item">8</div>
+            <div class="question-item">9</div>
+            <div class="question-item">10</div>
+            <div class="question-item">11</div>
+            <div class="question-item">12</div>
+            <div class="question-item">13</div>
+            <div class="question-item">14</div>
+            <div class="question-item">15</div>
+            <div class="question-item">16</div>
+            <div class="question-item">17</div>
+            <div class="question-item">18</div>
+            <div class="question-item">19</div>
+            <div class="question-item">20</div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p class="footer-text" data-ru='© 2025 "Алтын Орда" олимпиадасы. о.Актобе. р.Мугалжарский. г.Кандыагаш. Школа-гимназия №3. Все права защищены.' data-kz='© 2025 "Алтын Орда" олимпиадасы. Ақтөбе облысы. Мұғалжар ауданы. Қандыағш қаласы. №3 мектеп-гимназиясы. Барлық құқықтар қорғалған.'>
+        © 2025 "Алтын Орда" олимпиадасы. о.Актобе. р.Мугалжарский. г.Кандыагаш. Школа-гимназия №3. Все права защищены.
+    </p>
+    <p class="footer-subtext" data-ru="По мотивам произведения Ильяса Есенберлина" data-kz="Ыбырайыс Есенберлин шығармасы бойынша">
+        По мотивам произведения Ильяса Есенберлина
+    </p>
+</footer>
+
+<script>
+    // Таймер
+    let timeLeft = 40 * 60; // 40 минут в секундах
+    const timerElement = document.getElementById('timer');
+
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            const timeOutText = currentLang === 'ru' ? 'Время вышло! Тест будет автоматически отправлен.' : 'Уақыт бітті! Тест жіберіледі.';
+            window.location = "/profile/{{ user[0] }}";
+
+            // Здесь можно добавить отправку теста
+        } else {
+            timeLeft--;
+        }
+    }
+
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // Навигация по вопросам
+    const questionItems = document.querySelectorAll('.question-item');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    let currentQuestion = 0;
+
+    function updateQuestionNavigation() {
+        questionItems.forEach((item, index) => {
+            item.classList.remove('current');
+            if (index === currentQuestion) {
+                item.classList.add('current');
+            }
+        });
+
+        prevBtn.disabled = currentQuestion === 0;
+        if (currentLang === 'ru') {
+            nextBtn.textContent = currentQuestion === questionItems.length - 1 ? 'Завершить' : 'Далее';
+        } else {
+            nextBtn.textContent = currentQuestion === questionItems.length - 1 ? 'Аяқтау' : 'Алға';
+        }
+    }
+
+    questionItems.forEach((item, index) => {
+        item.addEventListener('click', () => {
+            currentQuestion = index;
+            updateQuestionNavigation();
+            // Здесь нужно обновить отображаемый вопрос и ответы
+            updateQuestionContent();
+        });
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            updateQuestionNavigation();
+            // Обновить вопрос и ответы
+            updateQuestionContent();
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentQuestion < questionItems.length - 1) {
+            currentQuestion++;
+            updateQuestionNavigation();
+            // Обновить вопрос и ответы
+            updateQuestionContent();
+        } else {
+            // Завершение теста
+            const confirmText = currentLang === 'ru' ? 'Вы уверены, что хотите завершить тест?' : 'Тестті аяқтағыңыз келетініне сенімдісіз бе?';
+            const alertText = currentLang === 'ru' ? 'Тест завершен. Ваши ответы отправлены.' : 'Тест аяқталды. Жауаптарыңыз жіберілді.';
+
+            if (confirm(confirmText)) {
+                window.location = "/profile/{{ user[0] }}";
+                // Здесь можно добавить отправку результатов
+            }
+        }
+    });
+
+    // Отметка отвеченных вопросов
+    const answerOptions = document.querySelectorAll('.answer-option input');
+    answerOptions.forEach(option => {
+        option.addEventListener('change', function() {
+            questionItems[currentQuestion].classList.add('answered');
+        });
+    });
+
+    // Переключение языка
+    const langButtons = document.querySelectorAll('.lang-btn');
+    let currentLang = 'ru';
+
+    function updateQuestionContent() {
+        // В реальном приложении здесь должна быть загрузка соответствующего вопроса
+        const questionText = document.querySelector('.question-text');
+        questionText.textContent = `${currentQuestion + 1}. ${currentLang === 'ru' ? 'Пример вопроса' : 'Сұрақ мысалы'} ${currentQuestion + 1}`;
+    }
+
+    function switchLanguage(lang) {
+        currentLang = lang;
+
+        // Обновляем активную кнопку языка
+        langButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+
+        // Обновляем все текстовые элементы
+        document.querySelectorAll('[data-ru], [data-kz]').forEach(el => {
+            if (el.tagName === 'INPUT' || el.tagName === 'OPTION') return;
+
+            const text = el.getAttribute(`data-${lang}`);
+            if (text) el.textContent = text;
+        });
+
+        // Обновляем навигацию по вопросам
+        updateQuestionNavigation();
+
+        // Обновляем содержимое текущего вопроса
+        updateQuestionContent();
+    }
+
+    langButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            switchLanguage(btn.dataset.lang);
+        });
+    });
+
+    // Инициализация языка
+    switchLanguage('ru');
+</script>
+</body>
+</html>

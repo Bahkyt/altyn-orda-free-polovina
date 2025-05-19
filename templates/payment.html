@@ -1,0 +1,88 @@
+{% extends 'main_base.html' %}
+
+
+{% block burger %}
+    <div class="burger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <div class="nav-menu" id="navMenu">
+      <button style="background: transparent; border: none; color: black;" onclick="changeLanguage('ru')">Рус</button>
+      <button style="background: transparent; border: none; color: black;" onclick="changeLanguage('kz')">Қаз</button>
+      <a href="/profile/{{ user[0] }}">Профиль</a>
+      <a href="/logout">Выйти</a>
+    </div>
+{% endblock %}
+
+{% block login %}
+
+<h1>Оплата доступа к тесту</h1>
+<p>Стоимость: <strong>650 ₸</strong></p>
+<!-- Кнопки переключения инструкции -->
+<!--<div class="tab-container">-->
+<!--  <div class="tab-buttons">-->
+<!--    <div class="tab-indicator" id="tab-indicator"></div>-->
+<!--    <button onclick="showInstruction('text')" id="btn-text">Инструкция (текст)</button>-->
+<!--    <button onclick="showInstruction('photo')" id="btn-photo">Инструкция (фото)</button>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!-- Инструкция по умолчанию - текстовая -->
+<div id="instruction-text" class="payment-info">
+  <h3 data-ru="Как оплатить через Kaspi Bank" data-kz="Kaspi Bank арқылы қалай төлеуге болады">Как оплатить через Kaspi Bank (текстовая инструкция):</h3>
+  <ol>
+    <li data-ru="Откройте приложение Kaspi.kz" data-kz="Kaspi.kz ашыңыз">Откройте приложение Kaspi.kz</li>
+    <li data-ru='Перейдите в раздел "Переводы"' data-kz='"Переводы" бөліміне өтіңіз'>Перейдите в раздел "Переводы"</li>
+    <li data-ru='Выберите "Клиенту Kaspi"' data-kz='"Клиенту Kaspi" Таңдаңыз'>Выберите "Клиенту Kaspi"</li>
+    <li data-ru="Введите номер телефона: " data-kz="Телефон нөмірін енгізіңіз: ">Введите номер телефона: </li><strong>+7 (705) 728-82-86</strong>
+    <li data-ru="Должен выйти " data-kz="Шығу керек ">Должен выйти </li><strong>"Гульмира Т."</strong>
+    <li data-ru="Сумма: " data-kz="Бағасы: ">Сумма: </li><strong>650 ₸</strong>
+    <li data-ru='Укажите назначение платежа: "Ваш id". Ваш id = {{ user[0] }}' data-kz='Төлемнің мақсатын көрсетіңіз:"Сіздің id". Сіздің id= {{user[0]}}'>Укажите назначение платежа: "Ваш id". Ваш id = {{ user[0] }}</li>
+    <li data-ru="Подтвердите платеж" data-kz="Төлемді растаңыз">Подтвердите платеж</li>
+<li data-ru="Доступ к тестам будет открыт после подтверждения учителя"
+    data-kz="Тесттерге қол жеткізу мұғалім растағаннан кейін ашылады">
+    Доступ к тестам будет открыт после подтверждения учителя
+</li>
+  </ol>
+</div>
+
+<!-- Фотоинструкция -->
+<div id="instruction-photo" class="payment-info" style="display: none;">
+  <h3>Фотоинструкция по шагам:</h3>
+  <div id="photo-steps" style="display: grid; gap: 20px;">
+    <img src="{{ url_for('static', filename='kaspi_photo/kaspi_photo1.jpg') }}" alt="Шаг 1" style="max-width: 100%; border-radius: 10px;">
+    <img src="{{ url_for('static', filename='kaspi_photo/kaspi_photo1.jpg') }}" alt="Шаг 2" style="max-width: 100%; border-radius: 10px;">
+    <img src="{{ url_for('static', filename='kaspi_photo/kaspi_photo1.jpg') }}" alt="Шаг 3" style="max-width: 100%; border-radius: 10px;">
+    <img src="{{ url_for('static', filename='kaspi_photo/kaspi_photo1.jpg') }}" alt="Шаг 4" style="max-width: 100%; border-radius: 10px;">
+    <img src="{{ url_for('static', filename='kaspi_photo/kaspi_photo1.jpg') }}" alt="Шаг 5" style="max-width: 100%; border-radius: 10px;">
+    <img src="{{ url_for('static', filename='kaspi_photo/kaspi_photo1.jpg') }}" alt="Шаг 6" style="max-width: 100%; border-radius: 10px;">
+    <img src="{{ url_for('static', filename='kaspi_photo/kaspi_photo1.jpg') }}" alt="Шаг 7" style="max-width: 100%; border-radius: 10px;">
+    <img src="{{ url_for('static', filename='kaspi_photo/kaspi_photo1.jpg') }}" alt="Шаг 8" style="max-width: 100%; border-radius: 10px;">
+  </div>
+</div>
+
+<!-- Форма загрузки PDF -->
+<!--<form action="/upload" method="post" enctype="multipart/form-data">
+  <div class="file-upload" onclick="document.getElementById('receiptFile').click()" style="border: 2px dashed #ccc; padding: 20px; cursor: pointer; border-radius: 10px; text-align: center;">
+    <strong>Загрузите чек об оплате (PDF)</strong><br>
+    <span id="fileName">Нажмите чтобы выбрать файл</span>
+  </div>
+  <input type="file" id="receiptFile" name="file" accept=".pdf" style="display: none;" required>
+  <br><br>
+  <button type="submit" style="padding: 10px 20px; background-color: #ffc107; border: none; border-radius: 8px;">Отправить чек на проверку</button>
+</form>-->
+<br>
+<strong data-ru="Доступ к тестам будет открыт после подтверждения учителя"
+    data-kz="Тесттерге қол жеткізу мұғалім растағаннан кейін ашылады">
+    Доступ к тестам будет открыт после подтверждения учителя
+</strong>
+<br>
+<a href="/payment"><button type="submit" style="padding: 10px 20px; background-color: #ffc107; border: none; border-radius: 8px;">Обновить</button></a>
+
+
+
+
+
+{% endblock %}

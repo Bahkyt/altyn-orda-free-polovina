@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Проверка сертификата</title>
+    <style>
+        .valid { color: green; }
+        .invalid { color: red; }
+    </style>
+</head>
+<body>
+    {% if valid %}
+        <h1 class="valid">✅ Сертификат действителен</h1>
+        <p>Участник: <strong>{{ name }}</strong></p>
+        <p>Номер: {{ cert_id }}</p>
+        <img src="{{url_for('static', filename='certificate/certificate.jpg')}}", width="800px">
+
+    {% else %}
+        <h1 class="invalid">❌ Сертификат не найден</h1>
+    {% endif %}
+</body>
+</html>
